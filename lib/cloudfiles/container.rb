@@ -60,17 +60,17 @@ module CloudFiles
           begin
             response = SwiftClient.head_container(self.connection.cdnurl, self.connection.authtoken, escaped_name)
             cdn_enabled = ((response["x-cdn-enabled"] || "").downcase == "true") ? true : false
-            {
-              :cdn_enabled => cdn_enabled,
-              :cdn_ttl => cdn_enabled ? response["x-ttl"].to_i : nil,
-              :cdn_url => cdn_enabled ? response["x-cdn-uri"] : nil,
-              :cdn_ssl_url => cdn_enabled ? response["x-cdn-ssl-uri"] : nil,
-              :cdn_streaming_url => cdn_enabled ? response["x-cdn-streaming-uri"] : nil,
-              :cdn_log => (cdn_enabled and response["x-log-retention"] == "True") ? true : false
-            }
           rescue ClientException => e
-            raise CloudFiles::Exception::NoSuchContainer, "Container #{@name} does not exist" unless (e.status.to_s =~ /^20/)
+            cdn_enabled = false
           end
+          {
+            :cdn_enabled => cdn_enabled,
+            :cdn_ttl => cdn_enabled ? response["x-ttl"].to_i : nil,
+            :cdn_url => cdn_enabled ? response["x-cdn-uri"] : nil,
+            :cdn_ssl_url => cdn_enabled ? response["x-cdn-ssl-uri"] : nil,
+            :cdn_streaming_url => cdn_enabled ? response["x-cdn-streaming-uri"] : nil,
+            :cdn_log => (cdn_enabled and response["x-log-retention"] == "True") ? true : false
+          }
         )
       else
         @cdn_metadata = {}
