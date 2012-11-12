@@ -368,7 +368,7 @@ module CloudFiles
     def copy(options = {})
       raise CloudFiles::Exception::Syntax, "You must provide the :container, :name, or :headers for this operation" unless (options[:container] || options[:name] || options[:headers])
       new_container = options[:container] || self.container.name
-      new_name = options[:name] || self.name
+      new_name = (options[:name] || self.name).dup
       new_headers = options[:headers] || {}
       raise CloudFiles::Exception::Syntax, "The :headers option must be a hash" unless new_headers.is_a?(Hash)
       new_name.sub!(/^\//,'')
