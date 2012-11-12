@@ -380,7 +380,7 @@ module CloudFiles
         return CloudFiles::Container.new(self.container.connection, new_container).object(new_name)
       rescue ClientException => e
         code = e.status.to_s
-        raise CloudFiles::Exception::InvalidResponse, "Invalid response code #{response.code}" unless (response.code =~ /^20/)
+        raise CloudFiles::Exception::InvalidResponse, "Invalid response code #{code}" unless (code =~ /^20/)
       end
     end
     
